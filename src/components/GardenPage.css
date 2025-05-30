@@ -1,0 +1,173 @@
+.garden-page {
+    min-height: 100vh;
+    background: linear-gradient(to bottom, #00274d, #004080); /* xanh đậm */
+    display: flex;
+    flex-direction: column;
+    font-family: sans-serif;
+  }
+  
+  /* Header */
+  .gp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #00274d; /* dark blue */
+    color: #fff;              /* ensure text is visible */
+    padding: 0 20px;
+    height: 60px;
+  }
+  
+  .gp-header-left {
+    display: flex;
+    align-items: center;
+  }
+  
+  .gp-header-logo {
+    height: 40px;
+    width: 40px;
+  }
+  
+  .gp-header-right {
+    display: flex;
+    align-items: center;
+  }
+  
+  .gp-username {
+    margin-right: 20px;
+    font-weight: bold;
+  }
+  
+  .gp-logout-button {
+    padding: 8px 16px;
+    background-color: #333333;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .gp-logout-button:hover {
+    background-color: #555555;
+  }
+  
+  /* Content layout */
+  .gp-content {
+    flex: 1;
+    display: flex;
+    /* Remove background-color to show dark gradient */
+    /* background-color: #fff; */
+    padding: 20px;
+    gap: 20px;
+  }
+  
+  /* Cột chính (giữa) */
+  .gp-main-column {
+    flex: 2;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .gp-section-title {
+    margin-bottom: 10px;
+    font-size: 18px;
+    color: #333;
+  }
+  
+  /* Chart container */
+  .gp-chart-container {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 20px;
+  }
+  
+  /* Current readings */
+  .gp-readings {
+    margin-bottom: 20px;
+  }
+  
+  /* Summary */
+  .gp-summary {
+    background-color: #f2f2f2;
+    border-radius: 8px;
+    padding: 16px;
+    font-size: 14px;
+  }
+  
+  /* Cột phải (record & change log) */
+  .gp-right-column {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .gp-tabs {
+    display: flex;
+    margin-bottom: 10px;
+    gap: 10px;
+  }
+  
+  .gp-tab {
+    background-color: #e7e7e7;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .gp-tab.active {
+    background-color: #d7d7d7;
+    font-weight: bold;
+  }
+  
+  /* Date filter */
+  .gp-date-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  
+  .gp-date-filter label {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+  }
+  
+  .gp-filter-button {
+    padding: 6px 12px;
+    background-color: #a259ff;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  
+  .gp-filter-button:hover {
+    background-color: #b57bff;
+  }
+  
+  /* Danh sách log */
+  .gp-log-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .gp-log-card {
+    background-color: #d4e3fd; /* xanh nhạt */
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+  }
+  
+  /* Cột Control Panel (giả lập) */
+  .gp-control-panel {
+    flex: 1;
+    background-color: #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+  }
+  

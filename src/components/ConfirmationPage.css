@@ -1,0 +1,32 @@
+.confirmation-page {
+  min-height: 100vh;
+  /* Dark blue gradient, same as Login Page */
+  background: linear-gradient(to bottom, #00274d, #004080);
+  
+  /* Center content vertically & horizontally */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  /* Other styling */
+  color: #fff;
+  font-family: sans-serif;
+  padding: 20px;
+}
+
+.confirmation-page p {
+  font-size: 1.2rem;
+  line-height: 1.5;
+}
+
+/* Style the “log in” link */
+.login-link {
+  color: #fff;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.login-link:hover {
+  color: #ddd; /* slightly lighter on hover */
+}

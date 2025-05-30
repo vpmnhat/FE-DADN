@@ -1,0 +1,191 @@
+.garden-browser-page {
+  min-height: 100vh;
+  /* Dark blue gradient background */
+  background: linear-gradient(to bottom, #00274d, #004080);
+  display: flex;
+  flex-direction: column;
+  font-family: sans-serif;
+}
+
+/* Header */
+.gb-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  /* You can use a solid dark blue or replicate the same gradient. */
+  /* For a solid color: */
+  background-color: #00274d;
+  /* Or for the same gradient:
+     background: linear-gradient(to bottom, #00274d, #004080);
+  */
+  padding: 0 20px;
+  height: 60px;
+}
+
+/* Logo within the header */
+.gb-header-left {
+  display: flex;
+  align-items: center;
+}
+
+.gb-header-logo {
+  height: 40px;
+  width: 40px;
+}
+
+/* Right side: username + logout */
+.gb-header-right {
+  display: flex;
+  align-items: center;
+}
+
+/* Make the username text white for visibility */
+.gb-username {
+  margin-right: 20px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Logout button styling */
+.gb-logout-button {
+  padding: 8px 16px;
+  background-color: #555;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.gb-logout-button:hover {
+  background-color: #777;
+}
+
+/* Content section */
+.gb-content {
+  flex: 1;
+  /* Remove or comment out the white background for full dark effect:
+     background-color: #fff;
+     border-top-left-radius: 20px;
+     border-top-right-radius: 20px; 
+  */
+  padding: 20px;
+}
+
+.gb-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #fff; /* Ensure title text is visible on dark background */
+}
+
+/* Search & Filter row */
+.gb-search-filter-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  gap: 30px;
+}
+
+.gb-search-bar {
+  position: relative;
+}
+
+.gb-search-input {
+  width: 300px;
+  padding: 8px 36px 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.gb-search-button {
+  position: absolute;
+  right: 8px;
+  top: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  color: #666;
+}
+
+.gb-search-button:hover {
+  color: #333;
+}
+
+.gb-clear-search {
+  position: absolute;
+  right: 36px;
+  top: 2px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #666;
+}
+
+.gb-clear-search:hover {
+  color: #333;
+}
+
+/* Filter Options */
+.gb-filter-options {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #fff; /* White text on dark background */
+  border-bottom: 2px solid #fff; /* White underline for contrast */
+  padding-bottom: 2px;
+}
+
+.gb-filter-options i {
+  margin-right: 4px;
+}
+
+/* Garden list container */
+.gb-garden-list {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 800px;
+  margin: 0 auto; /* Center horizontally */
+}
+
+/* Garden card */
+.gb-garden-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.gb-garden-card-body {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+}
+
+.gb-garden-card-body p {
+  margin: 4px 0;
+}
+
+.gb-garden-card-stats {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+
+.gb-stat-item {
+  text-align: center;
+}
+
+.gb-no-result {
+  text-align: center;
+  font-style: italic;
+  color: #fff; /* Visible on dark background */
+}
