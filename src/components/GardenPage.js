@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Dùng React Router để điều hướng
+import { useNavigate } from 'react-router-dom';
 import './GardenPage.css';
-import logo from '../assets/logo.png';  // Điều chỉnh đường dẫn logo
+import logo from '../assets/logo.png';
 
-// Chart.js setup
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -16,7 +15,6 @@ import {
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 
-// Đăng ký các thành phần của chart.js
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -30,20 +28,11 @@ ChartJS.register(
 function GardenPage() {
   const navigate = useNavigate();
 
-  // Dữ liệu chart (demo)
+  const [activeTab, setActiveTab] = useState('record');
+  const [autoOutput, setAutoOutput] = useState("Not triggered yet.");
+
   const chartData = {
-    labels: [
-      '00:00',
-      '02:30',
-      '05:00',
-      '07:30',
-      '10:00',
-      '12:30',
-      '15:00',
-      '17:30',
-      '20:00',
-      '22:30',
-    ],
+    labels: ['00:00', '02:30', '05:00', '07:30', '10:00', '12:30', '15:00', '17:30', '20:00', '22:30'],
     datasets: [
       {
         label: 'Temperature (smoothed)',
@@ -69,38 +58,23 @@ function GardenPage() {
     ],
   };
 
-  // Tuỳ chọn chart
   const chartOptions = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
-      legend: {
-        position: 'top',
-      },
-      title: {
-        display: false,
-        text: 'Sensors data past 24 hours',
-      },
+      legend: { position: 'top' },
+      title: { display: false },
     },
     scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Time (HH:MM)',
-        },
-      },
+      x: { title: { display: true, text: 'Time (HH:MM)' } },
       y: {
-        title: {
-          display: true,
-          text: 'Normalized smoothed values',
-        },
+        title: { display: true, text: 'Normalized smoothed values' },
         min: 0.3,
         max: 0.8,
       },
     },
   };
 
-  // Giả lập data readings & summary
   const currentReadings = {
     lightLevel: 4000,
     temperature: 33,
@@ -110,90 +84,106 @@ function GardenPage() {
   };
 
   const summary = {
-    maxTemp: 40,
-    minTemp: 28,
-    avgTemp: 33,
-    maxHum: 80,
-    minHum: 40,
-    avgHum: 60,
-    maxLight: 5000,
-    minLight: 1250,
-    avgLight: 3000,
+    maxTemp: 40, minTemp: 28, avgTemp: 33,
+    maxHum: 80, minHum: 40, avgHum: 60,
+    maxLight: 5000, minLight: 1250, avgLight: 3000,
   };
 
-  // Quản lý tab record / change log
-  const [activeTab, setActiveTab] = useState('record'); // 'record' hoặc 'changelog'
   const records = [
-    {
-      time: '2025-3-24 4:56 GMT',
-      temperature: '40°C',
-      humidity: '40%',
-      light: '1020Lx',
-      power: '5Wh'
-    },
-    {
-      time: '2025-3-24 6:10 GMT',
-      temperature: '35°C',
-      humidity: '45%',
-      light: '2050Lx',
-      power: '8Wh'
-    },
-    {
-      time: '2025-3-24 9:05 GMT',
-      temperature: '30°C',
-      humidity: '50%',
-      light: '3000Lx',
-      power: '10Wh'
-    },
-  ];
-  const changeLogs = [
-    {
-      time: '2025-3-24 3:00 GMT',
-      detail: 'Changed light level from auto to 80% manual.'
-    },
-    {
-      time: '2025-3-23 21:30 GMT',
-      detail: 'Adjusted humidity threshold to 50%.'
-    },
+    { time: '2025-3-24 4:56 GMT', temperature: '40°C', humidity: '40%', light: '1020Lx', power: '5Wh' },
+    { time: '2025-3-24 6:10 GMT', temperature: '35°C', humidity: '45%', light: '2050Lx', power: '8Wh' },
+    { time: '2025-3-24 9:05 GMT', temperature: '30°C', humidity: '50%', light: '3000Lx', power: '10Wh' },
   ];
 
-  // Giả lập logout
+  const changeLogs = [
+    { time: '2025-3-24 3:00 GMT', detail: 'Changed light level from auto to 80% manual.' },
+    { time: '2025-3-23 21:30 GMT', detail: 'Adjusted humidity threshold to 50%.' },
+  ];
+
   const handleLogout = () => {
-    // clear session...
     navigate('/login');
   };
 
-  // Filter records / logs
   const handleFilter = () => {
     console.log('Filtering by date...');
-    // Thêm logic tuỳ ý
+  };
+
+  const toggleLight = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:5000/api/control", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ option: "light" }),
+      });
+  
+      const data = await response.json();
+  
+      if (data.status === 200) {
+        const state = data.new_state?.toUpperCase() || "UNKNOWN";
+        setAutoOutput(`🔘 Toggled light to ${state}`);
+      } else {
+        setAutoOutput(`❌ API error: status ${data.status}`);
+      }
+    } catch (err) {
+      setAutoOutput(`❌ Network error: ${err.message}`);
+    }
+  };
+  
+
+  const setPump = (value) => {
+    fetch("http://localhost:5000/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ option: "humid", value }),
+    })
+      .then(() => setAutoOutput(`🚿 Pump set to ${value}%`))
+      .catch(err => console.error("Pump error:", err));
+  };
+
+  const setFan = (value) => {
+    fetch("http://localhost:5000/api/control", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ option: "temp", value }),
+    })
+      .then(() => setAutoOutput(`💨 Fan set to ${value}%`))
+      .catch(err => console.error("Fan error:", err));
+  };
+
+  const triggerAuto = () => {
+    fetch("http://localhost:5000/api/control/auto", {
+      method: "POST",
+    })
+      .then(res => res.json())
+      .then(data => {
+        setAutoOutput(
+          `🤖 Auto-Control Executed:\n\n` +
+          `Sensor Data:\n  Humid: ${data.predicted.humidity}\n  Temp: ${data.predicted.temperature}\n  Light: ${data.predicted.light}\n\n` +
+          `Predicted Actuator Values:\n  Pump: ${data.predicted.pump_power}%\n  Fan: ${data.predicted.fan_power}%\n  Light: ${data.predicted.light_state}`
+        );
+      })
+      .catch(err => setAutoOutput("❌ Auto-control failed: " + err));
   };
 
   return (
     <div className="garden-page">
-      {/* Header */}
       <header className="gp-header">
         <div className="gp-header-left">
-          <img src={logo} alt="GreenHouse Logo" className="gp-header-logo" />
+          <img src={logo} alt="GreenHouse Logo" className="gp-header-logo" onClick={() => navigate('/home')} style={{ cursor: 'pointer' }} />
         </div>
         <div className="gp-header-right">
           <span className="gp-username">Netan</span>
-          <button onClick={handleLogout} className="gp-logout-button">
-            Log Out
-          </button>
+          <button onClick={handleLogout} className="gp-logout-button">Log Out</button>
         </div>
       </header>
 
-      {/* Nội dung */}
       <div className="gp-content">
-        {/* Cột chính: Chart, Readings, Summary */}
         <div className="gp-main-column">
           <h2 className="gp-section-title">Sensors data past 24 hours</h2>
           <div className="gp-chart-container">
             <Line data={chartData} options={chartOptions} />
           </div>
 
-          {/* Current readings */}
           <div className="gp-readings">
             <h3>Current readings</h3>
             <p>Light level: {currentReadings.lightLevel}Lx</p>
@@ -203,7 +193,6 @@ function GardenPage() {
             <p>Last measured: {currentReadings.lastMeasured}</p>
           </div>
 
-          {/* Summary */}
           <div className="gp-summary">
             <h3>Summary</h3>
             <p>Maximum temperature: {summary.maxTemp} °C</p>
@@ -218,25 +207,13 @@ function GardenPage() {
           </div>
         </div>
 
-        {/* Cột phải: Record & Change log */}
         <div className="gp-right-column">
           <h2>Records and Change log</h2>
           <div className="gp-tabs">
-            <button
-              className={`gp-tab ${activeTab === 'record' ? 'active' : ''}`}
-              onClick={() => setActiveTab('record')}
-            >
-              Record
-            </button>
-            <button
-              className={`gp-tab ${activeTab === 'changelog' ? 'active' : ''}`}
-              onClick={() => setActiveTab('changelog')}
-            >
-              Change Log
-            </button>
+            <button className={`gp-tab ${activeTab === 'record' ? 'active' : ''}`} onClick={() => setActiveTab('record')}>Record</button>
+            <button className={`gp-tab ${activeTab === 'changelog' ? 'active' : ''}`} onClick={() => setActiveTab('changelog')}>Change Log</button>
           </div>
 
-          {/* Filter thời gian */}
           <div className="gp-date-filter">
             <label>
               Start date
@@ -246,12 +223,9 @@ function GardenPage() {
               End date
               <input type="date" />
             </label>
-            <button onClick={handleFilter} className="gp-filter-button">
-              Filter
-            </button>
+            <button onClick={handleFilter} className="gp-filter-button">Filter</button>
           </div>
 
-          {/* Danh sách record / change log */}
           <div className="gp-log-list">
             {activeTab === 'record' &&
               records.map((item, idx) => (
@@ -263,7 +237,6 @@ function GardenPage() {
                   <p>Power consumption: {item.power}</p>
                 </div>
               ))}
-
             {activeTab === 'changelog' &&
               changeLogs.map((log, idx) => (
                 <div key={idx} className="gp-log-card">
@@ -274,10 +247,19 @@ function GardenPage() {
           </div>
         </div>
 
-        {/* Cột Control Panel (demo) */}
         <div className="gp-control-panel">
-          <h2>Control Panel</h2>
-          <p>&lt;&lt; Control Option &gt;&gt;</p>
+          <h2>🕹️ Manual Control</h2>
+          <button onClick={toggleLight}>💡 Toggle Light</button>
+
+          <label>🚿 Set Pump Power (%):</label>
+          <input type="range" min="0" max="100" defaultValue="0" onInput={(e) => setPump(e.target.value)} />
+
+          <label>💨 Set Fan Power (%):</label>
+          <input type="range" min="0" max="100" defaultValue="0" onInput={(e) => setFan(e.target.value)} />
+
+          <h2>🤖 ML-Powered Automation</h2>
+          <button onClick={triggerAuto}>Run Auto-Control</button>
+          <pre>{autoOutput}</pre>
         </div>
       </div>
     </div>

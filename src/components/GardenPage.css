@@ -170,4 +170,24 @@
     padding: 20px;
     text-align: center;
   }
+  .gp-control-panel {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  .gp-control-panel label {
+    display: block;
+    margin-top: 12px;
+  }
+  .gp-control-panel input[type="range"] {
+    width: 100%;
+  }
+  .gp-control-panel pre {
+    background: #f2f2f2;
+    padding: 10px;
+    border-radius: 6px;
+    white-space: pre-wrap;
+  }
   

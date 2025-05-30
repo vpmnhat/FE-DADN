@@ -67,11 +67,11 @@ function HomePage() {
         <div className="header-right">
           <span className="username">Netan</span>
           <button onClick={goToProfile} className="profile-button">
-            Profile
+            <i className="fa fa-user-circle" aria-hidden="true"></i>
           </button>
-          <button onClick={goToGardenBrowser} className="browser-button">
+          {/* <button onClick={goToGardenBrowser} className="browser-button">
             Garden Browser
-          </button>
+          </button> */}
           <button onClick={handleLogout} className="logout-button">
             Log Out
           </button>
@@ -84,7 +84,7 @@ function HomePage() {
         <div className="garden-section">
           {/* Thanh tab + Info */}
           <div className="garden-section-header">
-            <div className="garden-tab active">My garden</div>
+            <div className="garden-tab active" onClick={goToGardenBrowser}>My garden</div>
             <div className="garden-info">
               <span>Total gardens: {gardens.length}</span>
               <span>Favourite garden: None</span>
