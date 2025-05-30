@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './GardenPage.css';
 import logo from '../assets/logo.png';
@@ -30,6 +30,9 @@ function GardenPage() {
 
   const [activeTab, setActiveTab] = useState('record');
   const [autoOutput, setAutoOutput] = useState("Not triggered yet.");
+  const [lightOn, setLightOn] = useState(false);
+  const [pumpPower, setPumpPower] = useState(0);
+  const [fanPower, setFanPower] = useState(0);
 
   const chartData = {
     labels: ['00:00', '02:30', '05:00', '07:30', '10:00', '12:30', '15:00', '17:30', '20:00', '22:30'],
@@ -134,7 +137,7 @@ function GardenPage() {
     fetch("http://localhost:5000/api/control", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ option: "humid", value }),
+      body: JSON.stringify({ option: "humid", value: value }),
     })
       .then(() => setAutoOutput(`🚿 Pump set to ${value}%`))
       .catch(err => console.error("Pump error:", err));
@@ -163,6 +166,60 @@ function GardenPage() {
         );
       })
       .catch(err => setAutoOutput("❌ Auto-control failed: " + err));
+  };
+
+  // Hàm xử lý bật/tắt đèn và cập nhật UI của công tắc
+  const handleToggleLight = () => {
+    toggleLight();
+    setLightOn(prev => !prev);
+  };
+
+  // Lấy giá trị ban đầu cho bảng điều khiển
+  useEffect(() => {
+    const fetchInitial = async () => {
+      try {
+        const opts = ["light", "humid", "temp"];
+        const results = await Promise.all(
+          opts.map(opt =>
+            fetch(`http://127.0.0.1:5000/api/display/latest?option=${opt}`)
+              .then(res => res.json())
+          )
+        );
+
+        const [lightData, humidData, tempData] = results;
+
+        if (Array.isArray(lightData) && lightData.length) {
+          const val = lightData[0][0];
+          setLightOn(val === "1" || val === "ON" || val === 1 || val === true);
+        }
+
+        if (Array.isArray(humidData) && humidData.length) {
+          const v = parseInt(humidData[0][0], 10);
+          if (!isNaN(v)) setPumpPower(v);
+        }
+
+        if (Array.isArray(tempData) && tempData.length) {
+          const v = parseInt(tempData[0][0], 10);
+          if (!isNaN(v)) setFanPower(v);
+        }
+      } catch (err) {
+        console.error("Failed to fetch initial control values:", err);
+      }
+    };
+    fetchInitial();
+  }, []);
+
+  // Handlers cho thanh trượt có điều khiển
+  const handlePumpChange = (e) => {
+    const val = e.target.value;
+    setPumpPower(val);
+    setPump(val);
+  };
+
+  const handleFanChange = (e) => {
+    const val = e.target.value;
+    setFanPower(val);
+    setFan(val);
   };
 
   return (
@@ -249,13 +306,19 @@ function GardenPage() {
 
         <div className="gp-control-panel">
           <h2>🕹️ Manual Control</h2>
-          <button onClick={toggleLight}>💡 Toggle Light</button>
+          <div className="gp-toggle-wrapper">
+            <span style={{ marginRight: '8px' }}>💡</span>
+            <label className="switch">
+              <input type="checkbox" checked={lightOn} onChange={handleToggleLight} />
+              <span className="slider round"></span>
+            </label>
+          </div>
 
-          <label>🚿 Set Pump Power (%):</label>
-          <input type="range" min="0" max="100" defaultValue="0" onInput={(e) => setPump(e.target.value)} />
+          <label>🚿 Set Pump Power (%): {pumpPower}%</label>
+          <input type="range" min="0" max="100" value={pumpPower} onChange={handlePumpChange} />
 
-          <label>💨 Set Fan Power (%):</label>
-          <input type="range" min="0" max="100" defaultValue="0" onInput={(e) => setFan(e.target.value)} />
+          <label>💨 Set Fan Power (%): {fanPower}%</label>
+          <input type="range" min="0" max="100" value={fanPower} onChange={handleFanChange} />
 
           <h2>🤖 ML-Powered Automation</h2>
           <button onClick={triggerAuto}>Run Auto-Control</button>
